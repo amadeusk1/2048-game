@@ -18,11 +18,28 @@ def startgame():
     move = input().lower()
     while move not in ["w","a","s","d"]:
         move = input()
-    board[3] = [4,4,2,2]
+    board[0] = [4,4,2,2] #temp
+    board[2] = [8,8,2,4]
+    board[3] = [4,4,2,2] #temp
+    board[1] = [4,4,2,2]
     printboard(board)
+
     if move == "w":
-        board[0] = board[3]
+        for i in range(0,4):
+            for row in range(1,4):
+                print("row number: ",row+1)
+                for column in range(0,4):
+                    if board[row-1][column] == 0:
+                        board[row-1][column] = board[row][column]
+                        board[row][column] = 0
+                    elif board[row-1][column] == board[row][column]:
+                        board[row-1][column] += board[row][column]
+                        board[row][column] = 0
+    
     printboard(board)
+
+        #board[0] = board[3]
+    #printboard(board)
 
 
 
