@@ -16,4 +16,4 @@ This is a Python implementation of the popular **2048 game**, where you slide ti
 - The objective is to create a tile with the value **2048**.
 - The game ends when no valid moves are possible.
 
-##Enjoy the Game!
+## Enjoy the Game!
