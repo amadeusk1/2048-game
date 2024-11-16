@@ -1,102 +1,114 @@
 import random
 import os
-#os.system('cls' if os.name == 'nt' else 'clear')
 
 def startgame():
-    board = []
-    for i in range(4):
-        board.append([0]*4)  
+    print("Welcome to 2048! Use W, A, S, D to move the tiles up, left, down, and right respectively. Combine tiles to reach 2048!")
+    board = [[0] * 4 for _ in range(4)]
     board = gennum(board)
-    while not (board == left(board) or board == up(board) or board == down(board) or board == right(board)):
-        board = gennum(board)
-        printboard(board)
-        move = input().lower()
-        while move not in ["w","a","s","d"]:
-            move = input()
+    gameover = False
+
+    while not gameover:
         os.system('cls' if os.name == 'nt' else 'clear')
-        #board[0] = [4,4,2,2] #temp
-        #board[1] = [4,4,2,2]
-        #board[2] = [8,8,2,4]
-        #board[3] = [4,4,2,2] #temp
+        printboard(board)
+        move = input("Enter your move (W/A/S/D): ").lower()
 
+        while move not in ["w", "a", "s", "d"]:
+            move = input("Invalid input! Enter W, A, S, or D: ").lower()
+
+        new_board = [row[:] for row in board]  # Create a copy of the board
         if move == "w":
-            board = up(board)    
-
+            new_board = up(board)
         elif move == "s":
-            board = down(board)
-
+            new_board = down(board)
         elif move == "d":
-            board = right(board)
-
+            new_board = right(board)
         elif move == "a":
-            board = left(board)
-    print("You Loose")
-        
+            new_board = left(board)
+
+        if new_board != board:  # Only update if there was a change
+            board = gennum(new_board)
+        else:
+            print("Invalid move!")
+
+        gameover = checkboard(board)
+
+    print("You Lose!")
+
 def up(board):
-    for i in range(0,4):
-            for row in range(1,4):
-                for column in range(0,4):
-                    if board[row-1][column] == 0:
-                        board[row-1][column] = board[row][column]
-                        board[row][column] = 0
-                    elif board[row-1][column] == board[row][column]:
-                        board[row-1][column] += board[row][column]
-                        board[row][column] = 0
-    return board
+    new_board = [row[:] for row in board]
+    for _ in range(4):
+        for row in range(1, 4):
+            for column in range(4):
+                if new_board[row - 1][column] == 0:
+                    new_board[row - 1][column] = new_board[row][column]
+                    new_board[row][column] = 0
+                elif new_board[row - 1][column] == new_board[row][column]:
+                    new_board[row - 1][column] += new_board[row][column]
+                    new_board[row][column] = 0
+    return new_board
 
 def down(board):
-    for i in range(0,4):
-        for row in range(2,-1,-1):
-            for column in range(0,4):
-                if board[row+1][column] == 0:
-                    board[row+1][column] = board[row][column]
-                    board[row][column] = 0
-                elif board[row+1][column] == board[row][column]:
-                    board[row+1][column] += board[row][column]
-                    board[row][column] = 0
-    return board
+    new_board = [row[:] for row in board]
+    for _ in range(4):
+        for row in range(2, -1, -1):
+            for column in range(4):
+                if new_board[row + 1][column] == 0:
+                    new_board[row + 1][column] = new_board[row][column]
+                    new_board[row][column] = 0
+                elif new_board[row + 1][column] == new_board[row][column]:
+                    new_board[row + 1][column] += new_board[row][column]
+                    new_board[row][column] = 0
+    return new_board
 
 def right(board):
-    for i in range(0,4):
-        for column in range(2,-1,-1):
-            for row in range(0,4):
-                    if board[row][column+1] == 0:
-                        board[row][column+1] = board[row][column]
-                        board[row][column] = 0
-                    elif board[row][column+1] == board[row][column]:
-                        board[row][column+1] += board[row][column]
-                        board[row][column] = 0
-    return board
+    new_board = [row[:] for row in board]
+    for _ in range(4):
+        for column in range(2, -1, -1):
+            for row in range(4):
+                if new_board[row][column + 1] == 0:
+                    new_board[row][column + 1] = new_board[row][column]
+                    new_board[row][column] = 0
+                elif new_board[row][column + 1] == new_board[row][column]:
+                    new_board[row][column + 1] += new_board[row][column]
+                    new_board[row][column] = 0
+    return new_board
 
 def left(board):
-    for i in range(0,4):
-        for column in range(3,0):
-            for row in range(0,4):
-                    if board[row][column-1] == 0:
-                        board[row][column-1] = board[row][column]
-                        board[row][column] = 0
-                    elif board[row][column-1] == board[row][column]:
-                        board[row][column-1] += board[row][column]
-                        board[row][column] = 0
-    return board
+    new_board = [row[:] for row in board]
+    for _ in range(4):
+        for column in range(1, 4):
+            for row in range(4):
+                if new_board[row][column - 1] == 0:
+                    new_board[row][column - 1] = new_board[row][column]
+                    new_board[row][column] = 0
+                elif new_board[row][column - 1] == new_board[row][column]:
+                    new_board[row][column - 1] += new_board[row][column]
+                    new_board[row][column] = 0
+    return new_board
 
 def gennum(board):
-    row = random.randrange(0,4)
-    column = random.randrange(0,4)
-    numbergen = random.randrange(2,5,2)
-    while board[row][column] > 0:
-        row = random.randrange(0,4)
-        column = random.randrange(0,4)
-        numbergen = random.randrange(2,5,2)
-    board[row][column] = numbergen
+    empty_cells = [(row, col) for row in range(4) for col in range(4) if board[row][col] == 0]
+    if not empty_cells:
+        return board
+    row, column = random.choice(empty_cells)
+    board[row][column] = random.choice([2, 4])
     return board
 
 def printboard(board):
     print()
-    for i in board:
-        print(i)
+    for row in board:
+        print(row)
 
+def checkboard(board):
+    upboard = up(board)
+    downboard = down(board)
+    rightboard = right(board)
+    leftboard = left(board)
 
-
+    # Check if all moves leave the board unchanged
+    if board == upboard and board == downboard and board == rightboard and board == leftboard:
+        return True
+    else:
+        return False
 
 startgame()
